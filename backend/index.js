@@ -6,6 +6,9 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const upload = require("./multer");
+const fs = require("fs");
+const path = require("path");
 
 const { authenticateToken } = require("./utilities");
 
@@ -162,6 +165,58 @@ app.get("/get-all-stories", authenticateToken, async (req, res) => {
       res.status(500).json({error:true,message:error.message});
     }
 });   
+
+// Route to handle image upload
+app.post("/image-upload",  upload.single("image"), async (req,res) => {
+    try{
+        if(!req.file){
+            return res
+            .status(400)
+            .json({error:true, message:"No image uploaded"});
+        }
+
+        const imageUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+
+        res.status(201).json({imageUrl});
+    } catch (error) {
+        res.status(500).json({error:true, message: error.message});
+    }
+})
+
+// Delete an image from uploads folder
+app.delete("/delete-image" , async(req,res) => {
+   const {imageUrl} = req.query;
+
+   if(!imageUrl) {
+    return res
+    .status(400)
+    .json({error:true, message:"imageUrl parameter is required"});
+   }
+
+   try {
+    // Extract the filename from the imageUrl
+    const filename = path.basename(imageUrl);
+
+    //Define the file path
+    const filePath = path.join(__dirname,'uploads', filename);
+
+    // Check if the file exists
+    if(fs.existsSync(filePath)) {
+        //Delete the file from the uploads folder
+        fs.unlinkSync(filePath);
+        res.status(200).json({message: "Image deleted successfully"});
+    } else {
+        res.status(200).json({error:true, message:"Image not found"});
+    }   
+    }catch (error) {
+        res.status(500).json({error: true, message: error.message});
+    }
+});
+
+// Serve static files from the uploads and assets directory
+app.use("/uploads",express.static(path.join(__dirname, "uploads")));
+app.use("/assets",express.static(path.join(__dirname, "assets")));
+
 app.listen(8000, () => {
     console.log("Server is running on port 8000");
 });

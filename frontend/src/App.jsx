@@ -10,6 +10,7 @@ const App = () => {
     <div>
       <Router>
         <Routes>
+          <Route path="/" exact element={<Root />} />
           <Route path="/dashboard" exact element={<Home />} />
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<SignUp />} />
@@ -18,5 +19,18 @@ const App = () => {
     </div>
   )
 }
+
+// Define the Root component to handle the initial redirect
+const Root =() => {
+  // Check if token exists in localStorage
+  const isAuthenticated = !!localStorage.getItem("token");
+
+  //Redirect to dashboard if authenticated , otherwise to login
+  return isAuthenticated ? (
+    <Navigate to ="/dashboard" />
+  ):(
+    <Navigate to ="/login" />
+  );
+};
 
 export default App;

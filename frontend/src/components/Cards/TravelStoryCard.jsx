@@ -18,7 +18,7 @@ const TravelStoryCard = ({
             <img
                 src={imgUrl}
                 alt={title}
-                className="w-full h-48 object-cover rounded-t-lg"
+                className="w-full h-48 object-cover rounded-lg"
                 onClick={onClick}
             />
             <button

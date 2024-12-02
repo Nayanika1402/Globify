@@ -3,7 +3,11 @@ import { MdAdd, MdDeleteOutline, MdUpdate, MdClose } from "react-icons/md";
 import DateSelector from '../../components/input/DateSelector';
 import ImageSelector from '../../components/input/ImageSelector';
 import { useState } from 'react';
+import axiosInstance from "../../utils/axiosInstance";
+import moment from "moment";
+import uploadImage from '../../utils/uploadImage';
 import TagInput from '../../components/input/TagInput';
+import {toast} from "react-toastify";
 
 const AddEditTravelStory = ({
   storyInfo,
@@ -17,7 +21,62 @@ const AddEditTravelStory = ({
   const [visitedLocation, setVisitedLocation] = useState([]);
   const [visitedDate, setVisitedDate] = useState(null);
 
-  const handleAddOrUpdateClick = () => {};
+  const [error,setError] = useState("");
+
+  // Add New Travel Story
+  const addNewTravelStory = async () => {
+    try{
+      let imageUrl ="" ;
+
+      // Upload image if present
+      if (storyImg) {
+        const imgUploadRes = await uploadImage(storyImg);
+        //Get image URL
+        imageUrl = imgUploadRes.imageUrl || "";
+      }
+
+      const response = await axiosInstance.post("/add-travel-story",{
+        title,
+        story,
+        imageUrl:imageUrl || "",
+        visitedLocation,
+        visitedDate:visitedDate 
+        ? moment(visitedDate).valueOf()
+        : moment().valueOf(),
+      });
+      if (response.data && response.data.story) {
+        toast.success("Story Added Successfully");
+        // Refresh stories
+        getAllTravelStories();
+        // Close modal or form
+        onClose();
+      }
+    }catch (error){
+
+    }
+  }
+
+  // Update Travel Story
+  const updateTravelStory = async () => {}
+
+  const handleAddOrUpdateClick = () => {
+    console.log("Input Data:", { title, storyImg, story, visitedLocation, visitedDate });
+  
+    if (!title) {
+      setError("Please enter the title");
+      return;
+    }
+    if (!story) {
+      setError("Please enter the story");
+      return;
+    }
+    setError("");
+    if (type === "edit") {
+      updateTravelStory();
+    } else {
+      addNewTravelStory();
+    }
+  };   
 
   // Delete story image and Update the story
   const handleDeleteStoryImg = async () => {}
@@ -46,6 +105,9 @@ const AddEditTravelStory = ({
               <MdClose className="text-xl text-slate-400" />
             </button>
           </div>
+          {error && (
+            <p className="text-red-500 text-x5 pt-2 text-right">{error}</p>
+          )}
         </div>
       </div>
 

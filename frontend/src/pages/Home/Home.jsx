@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../../components/NavBar";
 import TravelStoryCard from '../../components/Cards/TravelStoryCard';
 import AddEditTravelStory from './AddEditTravelStory';
+import ViewTravelStory from './AddEditTravelStory';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import {MdAdd} from "react-icons/md";
@@ -18,6 +19,11 @@ const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] =useState({
     isShown:false,
     type:"add",
+    data:null,
+  });
+
+  const [openViewModal, setOpenViewModal] = useState({
+    isShown:false,
     data:null,
   });
 
@@ -51,10 +57,14 @@ const Home = () => {
   };
 
   // Handle Edit Story click
-  const handleEdit = (data) => {}
+  const handleEdit = (data) => {
+
+  }
 
   // Handle Travel Story Click
-  const handleViewStory = (data) => {}
+  const handleViewStory = (data) => {
+    setOpenViewModal({isShown:true, data});
+  };
 
   // Handle Update Favourite
   const updateIsFavourite = async(storyData) => {
@@ -102,7 +112,6 @@ const Home = () => {
                       date={item.visitedDate}
                       visitedLocation={item.visitedLocation}
                       isFavourite={item.isFavourite}
-                      onEdit={() => handleEdit(item)}
                       onClick={() => handleViewStory(item)}
                       onFavouriteClick={() => updateIsFavourite(item)}
                     />
@@ -131,7 +140,7 @@ const Home = () => {
         appElement={document.getElementById("root")}
         className="model-box"
         >
-          <AddEditTravelStory 
+          <ViewTravelStory 
             type={openAddEditModal.type}
             storyInfo={openAddEditModal.data}
             onClose={() => {
@@ -139,6 +148,24 @@ const Home = () => {
             }}
             getAllTravelStories={getAllTravelStories}
           />
+        </Modal>
+        {/* View Travel Story Model */}
+        <Modal
+        isOpen={openViewModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay:{
+            backgroundColor:"rgba(0,0,0,0.2)",
+            zIndex:999,
+          },
+        }}
+        appElement={document.getElementById("root")}
+        className="model-box"
+        >
+          <ViewTravelStory
+            type={openViewModal.type}
+            storyInfo={openViewModal.data || null}
+            />
         </Modal>
 
       <button

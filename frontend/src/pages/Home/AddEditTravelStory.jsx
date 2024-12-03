@@ -82,7 +82,7 @@ const AddEditTravelStory = ({
   const handleDeleteStoryImg = async () => {}
 
   return (
-    <div>
+    <div className="relative">
       {/* Parent container element */}
       <div className="flex items-center justify-between">
         <h5 className="text-xl font-medium text-slate-700">

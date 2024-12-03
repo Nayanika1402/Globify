@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NavBar from "../../components/NavBar";
 import TravelStoryCard from '../../components/Cards/TravelStoryCard';
 import AddEditTravelStory from './AddEditTravelStory';
-import ViewTravelStory from './AddEditTravelStory';
+import ViewTravelStory from './ViewTravelStory';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import {MdAdd} from "react-icons/md";
@@ -140,7 +140,7 @@ const Home = () => {
         appElement={document.getElementById("root")}
         className="model-box"
         >
-          <ViewTravelStory 
+          <AddEditTravelStory 
             type={openAddEditModal.type}
             storyInfo={openAddEditModal.data}
             onClose={() => {
@@ -163,8 +163,10 @@ const Home = () => {
         className="model-box"
         >
           <ViewTravelStory
-            type={openViewModal.type}
-            storyInfo={openViewModal.data || null}
+            storyInfo={openViewModal.data || null} 
+            onClose ={() =>{}}
+            onEditClick ={() =>{}}
+            onDeleteClick ={() =>{}}
             />
         </Modal>
 

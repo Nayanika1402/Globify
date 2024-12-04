@@ -15,11 +15,11 @@ const AddEditTravelStory = ({
   onClose,
   getAllTravelStories,
 }) => {
-  const [title, setTitle] = useState("");
-  const [storyImg, setStoryImg] = useState(null);
-  const [story, setStory] = useState("");
-  const [visitedLocation, setVisitedLocation] = useState([]);
-  const [visitedDate, setVisitedDate] = useState(null);
+  const [title, setTitle] = useState(storyInfo?.title || "");
+  const [storyImg, setStoryImg] = useState(storyInfo?.imageUrl || null);
+  const [story, setStory] = useState(storyInfo?.story ||"");
+  const [visitedLocation, setVisitedLocation] = useState(storyInfo?.visitedLocation ||[]);
+  const [visitedDate, setVisitedDate] = useState(storyInfo?.visitedDate || null);
 
   const [error,setError] = useState("");
 
@@ -52,12 +52,70 @@ const AddEditTravelStory = ({
         onClose();
       }
     }catch (error){
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        // Handle unexpected errors
+        setError("An unexpected error occured.Please try again.");
+      }
 
     }
   }
 
   // Update Travel Story
-  const updateTravelStory = async () => {}
+  const updateTravelStory = async () => {
+    const storyId = storyInfo._id;
+    try {
+      let imageUrl = "";
+  
+      let postData = {
+        title,
+        story,
+        imageUrl: storyInfo.imageUrl || "",
+        visitedLocation,
+        visitedDate: visitedDate
+          ? moment(visitedDate).valueOf()
+          : moment().valueOf(),
+      };
+  
+      if (typeof storyImg === "object") {
+        // Upload New Image
+        const imgUploadRes = await uploadImage(storyImg);
+        imageUrl = imgUploadRes.imageUrl || "";
+  
+        postData = {
+          ...postData,
+          imageUrl: imageUrl,
+        };
+      }
+  
+      const response = await axiosInstance.post("/edit-story/" +storyId, postData);
+  
+      if (response.data && response.data.story) {
+        toast.success("Story Updated Successfully");
+        // Refresh stories
+        getAllTravelStories();
+        // Close modal or form
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        // Handle unexpected errors
+        setError("An unexpected error occurred. Please try again.");
+      }
+    }
+  };
+  
 
   const handleAddOrUpdateClick = () => {
     console.log("Input Data:", { title, storyImg, story, visitedLocation, visitedDate });
@@ -79,7 +137,10 @@ const AddEditTravelStory = ({
   };   
 
   // Delete story image and Update the story
-  const handleDeleteStoryImg = async () => {}
+  const handleDeleteStoryImg = async () => {
+    setStoryImg(null); // Remove the image from the state
+  toast.info("Image removed successfully");
+  }
 
   return (
     <div className="relative">

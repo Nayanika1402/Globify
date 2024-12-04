@@ -45,6 +45,10 @@ const ViewTravelStory = ({storyInfo,onClose, onEditClick,onDeleteClick}) => {
             src={storyInfo && storyInfo.imageUrl}
             alt="Selected"
             className="w-full h-[300px] object-cover rounded-lg" />
+
+        <div className="mt-4">
+          <p className="text-sm text-slate-950 leading-6 text-justifyy whitespace-pre-line">{storyInfo.story}</p>
+        </div>
       </div>
     </div>
   )

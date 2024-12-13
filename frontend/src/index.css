@@ -8,7 +8,7 @@
     --rdp-accent-color: #01b0cb !important; /* Cyan accent color */
     --rdp-accent-background-color: #dffbff !important;
     --rdp-day_button-border-radius: 8px !important;
-    --rdp-selected-font: bold medium "Poppins", sans-serif !important;
+    --rdp-selected-font: bold medium var(--rdp-font-family) !important;
 }
 
 @layer base {

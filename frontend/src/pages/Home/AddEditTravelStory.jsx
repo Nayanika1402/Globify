@@ -93,7 +93,7 @@ const AddEditTravelStory = ({
         };
       }
   
-      const response = await axiosInstance.post("/edit-story/" +storyId, postData);
+      const response = await axiosInstance.put("/edit-story/" +storyId, postData);
   
       if (response.data && response.data.story) {
         toast.success("Story Updated Successfully");
@@ -138,9 +138,32 @@ const AddEditTravelStory = ({
 
   // Delete story image and Update the story
   const handleDeleteStoryImg = async () => {
-    setStoryImg(null); // Remove the image from the state
-  toast.info("Image removed successfully");
-  }
+    // Deleting the Image
+    const deleteImgRes = await axiosInstance.delete("/delete-image",{
+      params: {
+        imageUrl: storyInfo.imageUrl,
+      },
+    });
+
+    if (deleteImgRes.data) {
+      const storyId= storyInfo._id;
+
+      const postData ={
+        title,
+        story,
+        visitedLocation,
+        visitedDate:moment().valueOf(),
+        imageUrl:"",
+      };
+
+      //Updating story
+      const response = await axiosInstance.put(
+        "/edit-story/" +storyId,
+        postData
+      );
+      setStoryImg(null);
+    }
+  };
 
   return (
     <div className="relative">
@@ -196,7 +219,7 @@ const AddEditTravelStory = ({
             <label className="input-label">STORY</label>
             <textarea
               type="text"
-              className="text-sm text-slate-9950 outline-none bg-slate-50 p-2 rounded"
+              className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded"
               placeholder="Your Story"
               rows={10}
               value={story}

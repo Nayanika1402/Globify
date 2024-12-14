@@ -18,8 +18,15 @@ const Globify = require("./models/globify.model");
 mongoose.connect(config.connectionString);
 
 const app = express();
-app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cors(
+    {
+         origin: ["https://deploy-mern-1whq.vercel.app"],
+         methods:["POST","GET"],
+        credentials:true
+     }));
+     app.use(express.json());
+
+     mongoose.connect('mongodb+srv://woormee912:<neel#urmi>@globify.k54sg.mongodb.net/Globify?retryWrites=true&w=majority&appName=Globify')
 
 // Create Account
 app.post("/create-account", async (req, res) => {

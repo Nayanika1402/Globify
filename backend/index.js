@@ -21,7 +21,7 @@ const app = express();
 app.use(cors(
     {
          origin: ["https://globify-frontend.vercel.app/login"],
-         methods:["POST","GET"],
+         methods:["POST","GET","PUT","DELETE"],
         credentials:true
      }));
      app.use(express.json());

@@ -8,7 +8,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import {MdAdd} from "react-icons/md";
 import Modal from"react-modal";
 import EmptyCard from '../../components/Cards/EmptyCard';
-import EmptyImg from '../../assets/images/home-img.svg';
+import { getEmptyCardImg } from '../../utils/helper';
 import moment from 'moment';
 import FilterInfoTitle from '../../components/Cards/FilterInfoTitle';
 import { getEmptyCardMessage } from "../../utils/helper";
@@ -148,7 +148,7 @@ const deleteTravelStory = async (data) => {
     getAllTravelStories();
   };
 
-  // Hnadle Filter Travel Stoory by Date Range
+  // Hnadle Filter Travel Story by Date Range
   const filterStoriesByDate= async(day) =>{
     try {
       const startDate = day.from? moment(day.from).valueOf() :null;
@@ -191,27 +191,29 @@ const deleteTravelStory = async (data) => {
 
   return (
     <>
-      <NavBar userInfo={userInfo}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              onSearchNote={onSearchStory}
-              handleClearSearch = {handleClearSearch}
-               />
+      <NavBar
+        userInfo={userInfo}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSearchNote={onSearchStory}
+        handleClearSearch={handleClearSearch}
+      />
 
-      <div className="container mx-auto py-10">
-
+      <div className="container mx-auto py-10 px-4">
+        {/* Filter Info Title Section */}
         <FilterInfoTitle
           filterType={filterType}
           filterDates={dateRange}
           onClear={() => {
             resetFilter();
           }}
-          />
+        />
 
-        <div className="flex gap-7">
+        <div className="flex flex-col sm:flex-row gap-7">
+          {/* Travel Stories Section */}
           <div className="flex-1">
             {allStories.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {allStories.map((item) => {
                   return (
                     <TravelStoryCard
@@ -229,85 +231,95 @@ const deleteTravelStory = async (data) => {
                 })}
               </div>
             ) : (
-              <EmptyCard imgSrc ={EmptyImg} message={getEmptyCardMessage(filterType)}
+              <EmptyCard
+                imgSrc={getEmptyCardImg(filterType)}
+                message={getEmptyCardMessage(filterType)}
               />
             )}
           </div>
 
-          <div className="w-[350px]">
-            <div className="bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg">
-            <div className="p-3">
+          {/* Calendar Section */}
+          <div className="w-full sm:max-w-[350px] mt-6 sm:mt-0">
+            <div className="bg-white border border-slate-200 shadow-lg shadow-slate-200/60 rounded-lg p-4">
               <DayPicker
                 captionLayout="dropdown-buttons"
                 mode="range"
                 selected={dateRange}
                 onSelect={handleDayClick}
                 pagedNavigation
-                />
-              </div>
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Add and Edit Travel Story Model */}
+      {/* Add/Edit Travel Story Modal */}
       <Modal
         isOpen={openAddEditModal.isShown}
         onRequestClose={() => {}}
         style={{
-          overlay:{
-            backgroundColor:"rgba(0,0,0,0.2)",
-            zIndex:999,
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            zIndex: 999,
           },
         }}
-        appElement={document.getElementById("root")}
+        appElement={document.getElementById('root')}
         className="model-box"
-        >
-          <AddEditTravelStory 
-            type={openAddEditModal.type}
-            storyInfo={openAddEditModal.data}
-            onClose={() => {
-              setOpenAddEditModal({isShown:false, type:"add" , data:null});
-            }}
-            getAllTravelStories={getAllTravelStories}
-          />
-        </Modal>
-        {/* View Travel Story Model */}
-        <Modal
+      >
+        <AddEditTravelStory
+          type={openAddEditModal.type}
+          storyInfo={openAddEditModal.data}
+          onClose={() => {
+            setOpenAddEditModal({ isShown: false, type: 'add', data: null });
+          }}
+          getAllTravelStories={getAllTravelStories}
+        />
+      </Modal>
+
+      {/* View Travel Story Modal */}
+      <Modal
         isOpen={openViewModal.isShown}
         onRequestClose={() => {}}
         style={{
-          overlay:{
-            backgroundColor:"rgba(0,0,0,0.2)",
-            zIndex:999,
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            zIndex: 999,
           },
         }}
-        appElement={document.getElementById("root")}
+        appElement={document.getElementById('root')}
         className="model-box"
-        >
-          <ViewTravelStory
-            storyInfo={openViewModal.data || null} 
-            onClose ={() =>{
-              setOpenViewModal((prevState) =>({...prevState, isShown: false}));
-            }}
-            onEditClick ={() =>{
-              setOpenViewModal((prevState) =>({...prevState, isShown:false}));
-              handleEdit(openViewModal.data || null)
-            }}
-            onDeleteClick ={() =>{
-              deleteTravelStory(openViewModal.data || null);
-            }}
-            />
-        </Modal>
+      >
+        <ViewTravelStory
+          storyInfo={openViewModal.data || null}
+          onClose={() => {
+            setOpenViewModal((prevState) => ({
+              ...prevState,
+              isShown: false,
+            }));
+          }}
+          onEditClick={() => {
+            setOpenViewModal((prevState) => ({
+              ...prevState,
+              isShown: false,
+            }));
+            handleEdit(openViewModal.data || null);
+          }}
+          onDeleteClick={() => {
+            deleteTravelStory(openViewModal.data || null);
+          }}
+        />
+      </Modal>
 
+      {/* Floating Add Button */}
       <button
         className="w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-cyan-400 fixed right-10 bottom-10"
         onClick={() => {
-          setOpenAddEditModal({isShown:true,type:"add",data:null});
+          setOpenAddEditModal({ isShown: true, type: 'add', data: null });
         }}
-        >
-          <MdAdd className="text-[32px] text-white" />
-        </button>
+      >
+        <MdAdd className="text-[32px] text-white" />
+      </button>
+
       <ToastContainer />
     </>
   );

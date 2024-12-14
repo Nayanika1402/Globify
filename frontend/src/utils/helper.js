@@ -1,3 +1,7 @@
+import ADD_STORY_IMG from "../assets/images/add-file.svg";
+import NO_SEARCH_DATA_IMG from "../assets/images/no-search.svg";
+import NO_FILTER_DATA_IMG from "../assets/images/not-date-found.svg";
+
 export const validateEmail =(email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -27,5 +31,18 @@ export const getEmptyCardMessage = (filterType) => {
                 default:
                     return `Start creating your first Travel Story! Click the 'Add' button to jod down your 
               thoughts,ideas, and memories.Let's get started!`;
+    }
+};
+
+export const getEmptyCardImg = (filterType) => {
+    switch (filterType) {
+        case "search":
+            return  NO_SEARCH_DATA_IMG;
+
+        case "date":
+            return NO_FILTER_DATA_IMG;
+
+        default:
+            return ADD_STORY_IMG;
     }
 };

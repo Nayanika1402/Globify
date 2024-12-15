@@ -19,7 +19,7 @@ mongoose.connect(config.connectionString);
 
 const app = express();
 const corsOptions = {
-    origin: 'https://globify-frontend.vercel.app', // Your frontend URL
+    origin: '*', // Your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true // If you are using cookies
   };

@@ -18,7 +18,13 @@ const Globify = require("./models/globify.model");
 mongoose.connect(config.connectionString);
 
 const app = express();
-app.use(cors({origin:"*"}));
+const corsOptions = {
+    origin: 'https://globify-frontend.vercel.app', // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // If you are using cookies
+  };
+  
+  app.use(cors(corsOptions));
 app.use(express.json());
 
 // Create Account

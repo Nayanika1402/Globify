@@ -1,1 +1,1 @@
-export const BASE_URL ='https://globify-nine.vercel.app/'
+export const BASE_URL ='https://globify-server.vercel.app/'
